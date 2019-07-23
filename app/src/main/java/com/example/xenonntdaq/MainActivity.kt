@@ -12,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private var mStatusFragment: StatusFragment = StatusFragment()
+    private var mRunsFragment: RunsFragment = RunsFragment()
+    private var mControlFragment: ControlFragment = ControlFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,14 +71,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_status -> {
-                val statusFragment = StatusFragment.newInstance()
-                openFragment(statusFragment)
+
+                // funny trick, copy private to local
+                //var localStatusFragment: StatusFragment? = this.mStatusFragment
+                //if (localStatusFragment == null){
+                //    this.mStatusFragment = StatusFragment() //StatusFragment.newInstance()
+                //    localStatusFragment = this.mStatusFragment
+                // }
+                var ft : FragmentTransaction = getSupportFragmentManager().beginTransaction()
+                ft.replace(R.id.content_frame, this.mStatusFragment)
+                ft.commit()
                 //return@OnNavigationItemSelectedListener true
             }
             R.id.nav_runs -> {
+                var ft : FragmentTransaction = getSupportFragmentManager().beginTransaction()
+                ft.replace(R.id.content_frame, this.mRunsFragment)
+                ft.commit()
                 //return@OnNavigationItemSelectedListener true
             }
             R.id.nav_command -> {
+                var ft : FragmentTransaction = getSupportFragmentManager().beginTransaction()
+                ft.replace(R.id.content_frame, this.mControlFragment)
+                ft.commit()
                 //return@OnNavigationItemSelectedListener true
             }
             R.id.nav_tools -> {
