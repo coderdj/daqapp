@@ -1,6 +1,7 @@
 package com.example.xenonntdaq
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.GravityCompat
@@ -13,12 +14,21 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.beust.klaxon.Klaxon
+import org.jetbrains.anko.longToast
+import java.net.URL
+import java.util.*
+import kotlin.concurrent.scheduleAtFixedRate
+import kotlinx.coroutines.async
+import org.jetbrains.anko.doAsync
+import kotlin.reflect.typeOf
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var mStatusFragment: StatusFragment = StatusFragment()
     private var mRunsFragment: RunsFragment = RunsFragment()
     private var mControlFragment: ControlFragment = ControlFragment()
+    private var mCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +50,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+        class DAQRate(val host: String, val rate: Float)
+
+        fun sendRateToFragment(result : Float){
+            mStatusFragment.passData(result);
+        }
+        var mytime = Timer();
+        mytime.scheduleAtFixedRate(0, 10000){
+            doAsync{
+                Log.d("Request", BuildConfig.API_URL+"getstatus/reader0_reader_0"+
+                        "?api_key="+BuildConfig.API_KEY+"&api_user="+BuildConfig.API_USER)
+
+                val result = Klaxon()
+                    .parse<DAQRate>(URL(BuildConfig.API_URL+"getstatus/reader0_reader_0"+
+                        "?api_key="+BuildConfig.API_KEY+"&api_user="+BuildConfig.API_USER).readText())
+                runOnUiThread {
+
+                    sendRateToFragment(result!!.rate)
+                    Log.d("DONE", result.toString())
+                    longToast("Request performed")
+                    //longToast(result)
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {

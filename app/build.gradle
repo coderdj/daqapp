@@ -21,6 +21,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'API_KEY', API_KEY
+        it.buildConfigField 'String', 'API_USER', API_USER
+        it.buildConfigField 'String', 'API_URL', API_URL
+
+    }
 }
 
 dependencies {
@@ -35,4 +41,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
+    implementation 'org.jetbrains.anko:anko-common:0.9'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC'
+    implementation 'com.beust:klaxon:5.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+
 }
