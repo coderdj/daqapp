@@ -23,6 +23,9 @@ import kotlinx.coroutines.async
 import org.jetbrains.anko.doAsync
 import kotlin.reflect.typeOf
 
+class DAQRate(val host: String, val rate: Float, val status: Int, val run_mode: String,
+              val buffer_length: Float)
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var mStatusFragment: StatusFragment = StatusFragment()
@@ -51,26 +54,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
-        class DAQRate(val host: String, val rate: Float)
 
-        fun sendRateToFragment(result : Float){
-            mStatusFragment.passData(result);
+
+        fun sendResultToFragment(result : DAQRate, index: Int){
+            mStatusFragment.passData(result, index);
         }
         var mytime = Timer();
         mytime.scheduleAtFixedRate(0, 10000){
-            doAsync{
-                Log.d("Request", BuildConfig.API_URL+"getstatus/reader0_reader_0"+
-                        "?api_key="+BuildConfig.API_KEY+"&api_user="+BuildConfig.API_USER)
-
-                val result = Klaxon()
-                    .parse<DAQRate>(URL(BuildConfig.API_URL+"getstatus/reader0_reader_0"+
-                        "?api_key="+BuildConfig.API_KEY+"&api_user="+BuildConfig.API_USER).readText())
-                runOnUiThread {
-
-                    sendRateToFragment(result!!.rate)
-                    Log.d("DONE", result.toString())
-                    longToast("Request performed")
-                    //longToast(result)
+            var hosts = arrayOf("reader0_reader_0", "reader1_reader_0", "reader2_reader_0")
+            for(i in 0..2) {
+                doAsync {
+                    var host = hosts[i]
+                    val result = Klaxon()
+                        .parse<DAQRate>(
+                            URL(
+                                BuildConfig.API_URL + "getstatus/" + host +
+                                        "?api_key=" + BuildConfig.API_KEY + "&api_user=" + BuildConfig.API_USER
+                            ).readText()
+                        )
+                    runOnUiThread {
+                        if (result != null) {
+                            sendResultToFragment(result, i)
+                            //Log.d("DONE", result.toString())
+                            //longToast("Request performed")
+                            //longToast(result)
+                        }
+                    }
                 }
             }
         }
