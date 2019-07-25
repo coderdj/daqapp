@@ -24,7 +24,7 @@ import org.jetbrains.anko.doAsync
 import kotlin.reflect.typeOf
 
 class DAQRate(val host: String, val rate: Float, val status: Int, val run_mode: String,
-              val buffer_length: Float)
+              val buffer_length: Float, val _id: String)
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
-
-
 
         fun sendResultToFragment(result : DAQRate, index: Int){
             mStatusFragment.passData(result, index);

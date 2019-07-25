@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
+              xmlns:ap="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:context=".MainActivity">
+    <com.androidplot.xy.XYPlot
+            style="@style/APDefacto.Light"
+            android:id="@+id/status_plot_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            ap:title=""
+            ap:titleTextSize="15sp"
+            ap:rangeTitle="Digitizer Read Rate [MB/s]"
+            ap:domainTitle="Reader"
+            ap:backgroundColor="#FFFFFF"
+            ap:graphBackgroundColor="#FFFFFF"
+            ap:lineLabels="left|bottom"
+            ap:lineLabelRotationBottom="0"/>
+
     <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/status_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.5"
     android:scrollbars="vertical"/>
 
 </LinearLayout>
